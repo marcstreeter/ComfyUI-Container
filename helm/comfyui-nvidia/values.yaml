@@ -1,0 +1,50 @@
+image:
+  repository: mmartial/comfyui-nvidia-docker
+  tag: ubuntu24_cuda12.8-latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8188
+
+env:
+  USE_UV: "true"
+  WANTED_UID: "1000"
+  WANTED_GID: "1000"
+  BASE_DIRECTORY: "/basedir"
+  SECURITY_LEVEL: "normal"
+  USE_NEW_MANAGER: "true"
+  ENABLE_MANAGER_LEGACY_UI: "true"
+  NVIDIA_VISIBLE_DEVICES: "all"
+  NVIDIA_DRIVER_CAPABILITIES: "all"
+
+gpu:
+  # In local k8s clusters (like Docker Desktop, kind), explicit GPU resource requests often 
+  # fail scheduling unless the NVIDIA device plugin is installed. The GPU might still be 
+  # accessible via the NVIDIA_VISIBLE_DEVICES=all env var depending on your container runtime.
+  enabled: true
+  count: "1"
+
+resources:
+  limits:
+    cpu: "14"
+    memory: "13Gi"
+  requests:
+    cpu: "8"
+    memory: "8Gi"
+
+volumes:
+  # 'hostPath' for local dev, 'pvc' for cloud
+  type: pvc
+  run:
+    hostPath: "/tmp/comfyui/run" # Overridden automatically by Tiltfile on local dev
+    pvcName: "comfyui-run-pvc"
+    size: "20Gi"
+  basedir:
+    hostPath: "/tmp/comfyui/basedir" # Overridden automatically by Tiltfile on local dev
+    pvcName: "comfyui-basedir-pvc"
+    size: "100Gi"
+
+sidecar:
+  enabled: true
+  image: "alpine:latest"

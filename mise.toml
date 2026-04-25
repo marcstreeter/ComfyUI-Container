@@ -1,0 +1,28 @@
+[tools]
+helm = "4.1.4"
+tilt = "0.37.2"
+
+[tasks.up]
+description = "Bring up the MMRenderer system using Tilt"
+run = "tilt up --port 10351"
+
+
+[tasks.down]
+description = "Tear down the MMRenderer system"
+run = "tilt down"
+
+[tasks.nuke]
+description = "Completely remove the system and clear Tilt cache/artifacts"
+run = """
+# Bring down tilt resources and clear its internal cache
+tilt down --clear-cache
+
+# Ensure the helm release is fully uninstalled just in case
+helm uninstall comfyui-nvidia --ignore-not-found
+
+# Note: If you want 'nuke' to also wipe your local ComfyUI state,
+# you could add safe deletions here, for example:
+# rm -rf ./run/uv_cache
+# rm -rf ./run/venv
+# (Please be careful not to delete your downloaded models in ./basedir)
+"""

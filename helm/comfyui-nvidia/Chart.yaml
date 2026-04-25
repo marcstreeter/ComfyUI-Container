@@ -1,0 +1,6 @@
+apiVersion: v2
+name: comfyui-nvidia
+description: A Helm chart for running ComfyUI with NVIDIA GPU support
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
