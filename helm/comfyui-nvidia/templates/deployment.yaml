@@ -17,6 +17,10 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      # spc_t is the SELinux equivalent of Docker's security_opt: label=disable
+      securityContext:
+        seLinuxOptions:
+          type: "spc_t"
       containers:
         - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
