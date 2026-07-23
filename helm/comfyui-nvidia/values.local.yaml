@@ -1,0 +1,8 @@
+volumes:
+  type: hostPath
+
+env:
+  # Rootless podman maps host UID 1000 -> UID 0 inside the kind node,
+  # so hostPath dirs appear owned by root. Match that here.
+  WANTED_UID: "0"
+  WANTED_GID: "0"

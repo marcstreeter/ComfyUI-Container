@@ -1,0 +1,22 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: mmrender
+nodes:
+- role: control-plane
+  # Mount explicit GPU devices from the host so the node can see the hardware
+  extraMounts:
+    - hostPath: /dev/nvidia0
+      containerPath: /dev/nvidia0
+    - hostPath: /dev/nvidiactl
+      containerPath: /dev/nvidiactl
+    - hostPath: /dev/nvidia-uvm
+      containerPath: /dev/nvidia-uvm
+    - hostPath: /dev/nvidia-uvm-tools
+      containerPath: /dev/nvidia-uvm-tools
+    # Mount driver version paths so the GPU Operator's driver-validation init container succeeds
+    - hostPath: /proc/driver/nvidia/version
+      containerPath: /proc/driver/nvidia/version
+    - hostPath: /sys/module/nvidia
+      containerPath: /sys/module/nvidia
+    - hostPath: /usr/bin/nvidia-smi
+      containerPath: /usr/bin/nvidia-smi

@@ -1,0 +1,7 @@
+.
+├── flux-2-klein-9b-fp8.safetensors
+├── flux-2-klein-9b-kv-fp8.safetensors
+├── flux-2-klein-base-9b-fp8.safetensors
+└── put_diffusion_model_files_here
+
+1 directory, 4 files

@@ -1,0 +1,7 @@
+# Override volume type to use PersistentVolumeClaims in production/cloud
+volumes:
+  type: pvc
+
+# Cloud clusters require explicit resource requests to schedule on GPU nodes
+gpu:
+  enabled: true

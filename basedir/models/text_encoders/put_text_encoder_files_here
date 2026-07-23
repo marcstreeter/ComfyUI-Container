@@ -1,0 +1,8 @@
+.
+├── put_text_encoder_files_here
+├── qwen_2.5_vl_7b_fp8_scaled.safetensors
+├── qwen_3_4b.safetensors
+├── qwen_3_8b_fp8mixed.safetensors
+└── umt5_xxl_fp8_e4m3fn_scaled.safetensors
+
+1 directory, 5 files

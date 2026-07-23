@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      # spc_t is the SELinux equivalent of Docker's security_opt: label=disable
+      securityContext:
+        seLinuxOptions:
+          type: "spc_t"
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8188
+              protocol: TCP
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory | quote }}
+              {{- if .Values.gpu.enabled }}
+              nvidia.com/gpu: {{ .Values.gpu.count | quote }}
+              {{- end }}
+          volumeMounts:
+            - name: run-volume
+              mountPath: /comfy/mnt
+            - name: basedir-volume
+              mountPath: /basedir
+            - name: dshm
+              mountPath: /dev/shm
+        {{- if .Values.sidecar.enabled }}
+        - name: {{ .Release.Name }}-watcher
+          image: {{ .Values.sidecar.image }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              apk add --no-cache inotify-tools
+              mkdir -p /basedir/output
+              echo "Watching for new files in /basedir/output..."
+              inotifywait -m -e close_write -e moved_to /basedir/output |
+              while read -r directory events filename; do
+                echo "got a new file: ${filename}"
+              done
+          volumeMounts:
+            - name: basedir-volume
+              mountPath: /basedir
+        {{- end }}
+      volumes:
+        - name: run-volume
+          {{- if eq .Values.volumes.type "hostPath" }}
+          hostPath:
+            path: {{ .Values.volumes.run.hostPath }}
+            type: DirectoryOrCreate
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.run.pvcName }}
+          {{- end }}
+        - name: basedir-volume
+          {{- if eq .Values.volumes.type "hostPath" }}
+          hostPath:
+            path: {{ .Values.volumes.basedir.hostPath }}
+            type: DirectoryOrCreate
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.basedir.pvcName }}
+          {{- end }}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "8Gi"

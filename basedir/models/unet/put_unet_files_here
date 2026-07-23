@@ -1,0 +1,10 @@
+.
+├── flux-2-klein-4b-Q4_K_S.gguf
+├── flux-2-klein-4b-Q8_0.gguf
+├── flux-2-klein-base-4b-fp8.safetensors
+├── full_encoder_small_decoder.safetensors
+├── put_unet_files_here
+├── wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors
+└── wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors
+
+1 directory, 7 files

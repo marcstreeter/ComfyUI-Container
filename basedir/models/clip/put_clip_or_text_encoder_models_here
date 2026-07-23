@@ -1,0 +1,7 @@
+.
+├── gemma-4-E4B-it-Q4_K_M.gguf
+├── prophet-qwen3-4b-sft-q8_0.gguf
+├── put_clip_or_text_encoder_models_here
+└── Qwen3-VL-4B-Instruct-Q4_K_M.gguf
+
+1 directory, 4 files

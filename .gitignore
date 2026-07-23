@@ -11,11 +11,19 @@
 # generation directories
 data/*
 HF/*
-models/*
-user/*
-
+basedir/models/**/*.safetensors
+basedir/models/**/*.gguf
+basedir/models/**/*.ckpt
+basedir/models/**/*.pt
+basedir/models/**/*.pth
+basedir/models/**/*.bin
+basedir/models/**/*.onnx
+basedir/models/configs/*
+basedir/output/*
+basedir/input/*
+basedir/user/*
+basedir/custom_nodes/*
 run/*
-basedir/*
 
 buildkitd.toml
 .env

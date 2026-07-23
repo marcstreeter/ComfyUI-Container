@@ -1,0 +1,6 @@
+.
+├── fill_in_llm_here
+├── qwen_2.5_vl_7b_fp8_scaled.safetensors
+└── qwen_3_8b_fp8mixed.safetensors
+
+1 directory, 3 files
