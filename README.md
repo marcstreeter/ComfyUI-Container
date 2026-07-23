@@ -19,6 +19,21 @@
   - including [Unraid](https://unraid.net) compatible images
 - open-source: build it yourself using the corresponding `Dockerfile` present in the directory of the same name and review the `init.bash` (i.e. the setup logic)
 
+<h2>TEMPORARY: custom_nodes manifest (remove this section once no longer needed)</h2>
+
+Before `basedir/custom_nodes` was added to `.gitignore`, this snapshot script was kept here to make it easy to recall which custom nodes were installed and reinstall them via `ComfyUI-Manager` if the folder is ever lost. **Delete this section once you no longer need it.**
+
+```bash
+for f in basedir/custom_nodes/*/pyproject.toml basedir/custom_nodes/.disabled/*/pyproject.toml; do
+  [ -f "$f" ] || continue
+  dir=$(dirname "$f")
+  name=$(grep -m1 -E '^name' "$f" | sed -E 's/name[[:space:]]*=[[:space:]]*"(.*)"/\1/')
+  version=$(grep -m1 -E '^version' "$f" | sed -E 's/version[[:space:]]*=[[:space:]]*"(.*)"/\1/')
+  repo=$(grep -m1 -iE '^repository' "$f" | sed -E 's/[Rr]epository[[:space:]]*=[[:space:]]*"(.*)"/\1/')
+  printf '%-30s %-10s %-55s %s\n' "$name" "$version" "$repo" "$dir"
+done
+```
+
 <h2>USE_UV=true</h2>
 
 **Although `USE_UV` is not enabled by default, it is recommended to use `uv`** instead of `pip` for faster and more reliable installations. The logic to set the proper `UV_TORCH_BACKEND` is already implemented in the main script, so in general, users should not have to set `PREINSTALL_TORCH_CMD`.
